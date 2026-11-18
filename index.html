@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smart Sahayak – AI-Driven Scheme Match</title>
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#12243b;--mute:#5b6b80;--line:#dbe1ea;--navy:#0f2a4a;--saf:#d9480f;--grn:#1e8e5a;--warn:#b45309;--soft:#eaf1fa;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1722;--card:#15243a;--ink:#e8eef6;--mute:#9db0c7;--line:#27405e;--navy:#0a1626;--saf:#ff8a50;--grn:#46c58a;--warn:#f5b04c;--soft:#1a3050}}
+:root[data-theme="dark"]{--bg:#0d1722;--card:#15243a;--ink:#e8eef6;--mute:#9db0c7;--line:#27405e;--navy:#0a1626;--saf:#ff8a50;--grn:#46c58a;--warn:#f5b04c;--soft:#1a3050}
+*{box-sizing:border-box}html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 Mukta,"Noto Sans Devanagari",system-ui,sans-serif}
+body.big{font-size:19px}
+header{background:var(--navy);color:#fff;padding:14px 20px}
+.bar{max-width:1080px;margin:auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:26px}.logo b{color:#ff8a50}.logo i{font-weight:600}
+.sp{flex:1}
+button,select,input{font:inherit}
+.chip{background:transparent;color:#fff;border:1px solid #ffffff66;border-radius:20px;padding:4px 14px;cursor:pointer}
+.chip[aria-pressed=true]{background:#fff;color:var(--navy)}
+:focus-visible{outline:3px solid var(--saf);outline-offset:2px}
+main{max-width:1080px;margin:auto;padding:20px}
+h1{font-size:clamp(26px,4.5vw,40px);line-height:1.15;margin:8px 0 6px;font-weight:800}
+.lead{color:var(--mute);max-width:62ch;margin:0 0 18px}
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:18px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h2{font-size:18px;margin:0 0 12px}
+label{display:block;font-weight:600;margin:12px 0 4px}
+.seg{display:flex;gap:8px}.seg button{flex:1;padding:9px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;cursor:pointer;font-weight:600}
+.seg button[aria-pressed=true]{background:var(--navy);color:#fff;border-color:var(--navy)}
+input[type=range]{width:100%;accent-color:var(--saf)}
+select,input[type=text]{width:100%;padding:9px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.val{float:right;color:var(--saf);font-weight:800}
+.best{border:2px solid var(--saf)}
+.big{font-size:34px;font-weight:800;line-height:1.1}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:12px 0}
+.kpi{background:var(--soft);border-radius:10px;padding:10px}.kpi small{display:block;color:var(--mute)}.kpi strong{font-size:20px}
+.tag{display:inline-block;border-radius:6px;padding:1px 8px;font-size:13px;font-weight:600}
+.ok{background:#1e8e5a22;color:var(--grn)}.no{background:#b4530922;color:var(--warn)}
+ul.why{margin:6px 0 0;padding-left:20px;color:var(--mute)}
+.alt{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.btn{background:var(--saf);color:#fff;border:0;border-radius:10px;padding:10px 16px;font-weight:800;cursor:pointer}
+.btn.sec{background:var(--soft);color:var(--ink)}
+.partner{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 0;border-top:1px solid var(--line)}
+.score{font-weight:800;color:var(--grn);text-align:right}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.st{flex:1;min-width:110px;padding:8px;border-radius:8px;background:var(--soft);color:var(--mute);font-size:14px}
+.st.on{background:var(--grn);color:#fff;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}
+.scroll{overflow-x:auto;max-height:230px}
+footer{max-width:1080px;margin:auto;padding:10px 20px 30px;color:var(--mute);font-size:14px}
+</style>
+</head>
+<body>
+<header><div class="bar">
+<div class="logo">स्मार्ट <i>Sahayak</i></div><span class="sp"></span>
+<button class="chip" id="lEn" aria-pressed="true">English</button>
+<button class="chip" id="lHi" aria-pressed="false">हिन्दी</button>
+<button class="chip" id="assist" aria-pressed="false" data-i="assist">Assisted mode</button>
+</div></header>
+<main>
+<h1 data-i="h1">Find the right scheme, EMI and bank branch in under 3 minutes</h1>
+<p class="lead" data-i="lead">Tell us your goal. Smart Sahayak checks eligibility, shows your EMI before you apply, and routes you to the nearest suitable partner.</p>
+<div class="grid">
+<section class="card" aria-labelledby="g">
+<h2 id="g" data-i="goal">Tell us your goal</h2>
+<div class="seg" role="group"><button id="gB" aria-pressed="true" data-i="biz">Business</button><button id="gE" aria-pressed="false" data-i="edu">Education</button></div>
+<label for="cost"><span data-i="cost">Project cost</span> <span class="val" id="costV"></span></label>
+<input id="cost" type="range" min="50000" max="10000000" step="50000" value="850000">
+<label for="inc"><span data-i="inc">Annual family income</span> <span class="val" id="incV"></span></label>
+<input id="inc" type="range" min="50000" max="1500000" step="10000" value="320000">
+<label for="ten"><span data-i="ten">Repayment period (years)</span> <span class="val" id="tenV"></span></label>
+<input id="ten" type="range" min="1" max="10" step="1" value="5">
+<label for="cat" data-i="cat">Category</label>
+<select id="cat"><option value="sc">Scheduled Caste (SC)</option><option value="other" data-i="other">Other (not covered)</option></select>
+<label for="who" data-i="who">Applicant type</label>
+<select id="who"><option>Individual</option><option>Self Help Group</option><option>Small business</option></select>
+<p style="margin-top:14px"><button class="btn sec" id="loc" data-i="loc">Use my location</button> <span id="locS" style="color:var(--mute)"></span></p>
+</section>
+<section>
+<div class="card best" id="res" aria-live="polite"></div>
+<div class="card" style="margin-top:14px"><h2 data-i="partners">Nearest eligible partners</h2><div id="parts"></div></div>
+</section>
+</div>
+<div class="grid" style="margin-top:18px">
+<section class="card"><h2 data-i="docs">Documents &amp; application</h2><div id="docs"></div>
+<p><button class="btn" id="sub" data-i="apply">Apply (demo)</button> <button class="btn sec" id="say" data-i="read">Read aloud</button></p>
+<div id="track"></div></section>
+<section class="card"><h2 data-i="sched">Repayment schedule (first 12 months)</h2><div class="scroll"><table id="tbl"></table></div></section>
+</div>
+</main>
+<footer data-i="foot">Demo prototype by ByteForge for SIH 2026 (SIH26092). Scheme rules, rates and partner branches below are illustrative sample data kept in one config block; verify against official NSFDC / JanSamarth / Stand-Up India notices before real use.</footer>
+<script>
+"use strict";
+/* ---------- CONFIG: replace with live scheme + partner APIs ---------- */
+const SCHEMES=[
+ {id:"term",name:"NSFDC Term Loan",goal:"business",ceiling:5000000,support:.9,rate:8,incomeCap:null,minCost:0,maxYears:7,docs:["Aadhaar","Caste certificate","Income certificate","Project report","Bank statement (6 months)","Address proof"]},
+ {id:"micro",name:"NSFDC Micro Finance",goal:"business",ceiling:140000,support:1,rate:5,incomeCap:300000,minCost:0,maxYears:3,docs:["Aadhaar","Caste certificate","Income certificate","SHG/Business proof"]},
+ {id:"sui",name:"Stand-Up India",goal:"business",ceiling:10000000,support:.75,rate:10.5,incomeCap:null,minCost:1000000,maxYears:7,docs:["Aadhaar","Caste certificate","PAN","Project report","Business registration"]},
+ {id:"edu",name:"NSFDC Education Loan",goal:"education",ceiling:3000000,support:.9,rate:4,incomeCap:800000,minCost:0,maxYears:10,docs:["Aadhaar","Caste certificate","Income certificate","Admission letter","Fee structure"]}
+];
+const PARTNERS=[
+ {n:"Sample RRB Branch, Rewa City",t:"RRB",lat:24.5362,lng:81.3037,s:["term","micro","edu"],fresh:2},
+ {n:"Sample SCA Office, Rewa",t:"SCA",lat:24.5200,lng:81.2900,s:["term","micro"],fresh:5},
+ {n:"Sample PSB Branch, Govindgarh",t:"PSB",lat:24.4040,lng:81.2840,s:["term","sui","edu"],fresh:1},
+ {n:"Sample RRB Branch, Teonthar",t:"RRB",lat:24.9400,lng:81.7100,s:["term","micro"],fresh:12},
+ {n:"Sample MFI Centre, Satna",t:"MFI",lat:24.5800,lng:80.8300,s:["micro"],fresh:3},
+ {n:"Sample PSB Branch, Satna",t:"PSB",lat:24.6005,lng:80.8322,s:["term","sui","edu"],fresh:4}
+];
+/* ---------- i18n ---------- */
+const T={en:{h1:"Find the right scheme, EMI and bank branch in under 3 minutes",lead:"Tell us your goal. Smart Sahayak checks eligibility, shows your EMI before you apply, and routes you to the nearest suitable partner.",goal:"Tell us your goal",biz:"Business",edu:"Education",cost:"Project cost",inc:"Annual family income",ten:"Repayment period (years)",cat:"Category",other:"Other (not covered)",who:"Applicant type",loc:"Use my location",partners:"Nearest eligible partners",docs:"Documents & application",apply:"Apply (demo)",read:"Read aloud",sched:"Repayment schedule (first 12 months)",assist:"Assisted mode",best:"Best match",loan:"Loan amount",own:"Your contribution",emi:"Monthly EMI",rate:"Interest rate",tot:"Total interest",elig:"Eligible",notel:"Not eligible",others:"Other schemes checked",heavy:"EMI is above 40% of monthly income; consider a longer period or a smaller project.",none:"No scheme matches yet. See reasons below and adjust your inputs.",km:"km away",match:"match",ref:"Application submitted. Reference",foot:"Demo prototype by ByteForge for SIH 2026 (SIH26092). Scheme rules, rates and partner branches below are illustrative sample data kept in one config block; verify against official NSFDC / JanSamarth / Stand-Up India notices before real use.",locok:"Location set",locno:"Location unavailable; using Rewa as default",m:"Month",pr:"Principal",it:"Interest",bal:"Balance"},
+hi:{h1:"3 मिनट में सही योजना, EMI और बैंक शाखा पाएँ",lead:"अपना लक्ष्य बताइए। स्मार्ट सहायक पात्रता जाँचता है, आवेदन से पहले EMI दिखाता है और निकटतम उपयुक्त पार्टनर तक पहुँचाता है।",goal:"अपना लक्ष्य बताइए",biz:"व्यवसाय",edu:"शिक्षा",cost:"परियोजना लागत",inc:"वार्षिक पारिवारिक आय",ten:"चुकौती अवधि (वर्ष)",cat:"श्रेणी",other:"अन्य (शामिल नहीं)",who:"आवेदक का प्रकार",loc:"मेरा स्थान उपयोग करें",partners:"निकटतम पात्र पार्टनर",docs:"दस्तावेज़ और आवेदन",apply:"आवेदन करें (डेमो)",read:"पढ़कर सुनाएँ",sched:"चुकौती अनुसूची (पहले 12 महीने)",assist:"सहायता मोड",best:"सर्वश्रेष्ठ मिलान",loan:"ऋण राशि",own:"आपका अंशदान",emi:"मासिक EMI",rate:"ब्याज दर",tot:"कुल ब्याज",elig:"पात्र",notel:"पात्र नहीं",others:"जाँची गई अन्य योजनाएँ",heavy:"EMI मासिक आय के 40% से अधिक है; अवधि बढ़ाएँ या परियोजना छोटी करें।",none:"अभी कोई योजना मेल नहीं खाती। नीचे कारण देखकर इनपुट बदलें।",km:"किमी दूर",match:"मिलान",ref:"आवेदन जमा हुआ। संदर्भ",foot:"ByteForge द्वारा SIH 2026 (SIH26092) के लिए डेमो प्रोटोटाइप। योजनाओं के नियम, दरें और शाखाएँ नमूना डेटा हैं; वास्तविक उपयोग से पहले NSFDC / JanSamarth / Stand-Up India की आधिकारिक सूचना से जाँचें।",locok:"स्थान सेट हुआ",locno:"स्थान उपलब्ध नहीं; रीवा डिफ़ॉल्ट है",m:"माह",pr:"मूलधन",it:"ब्याज",bal:"शेष"}};
+const S={lang:"en",goal:"business",pos:{lat:24.5362,lng:81.3037},best:null};
+const $=i=>document.getElementById(i),t=k=>T[S.lang][k]||k;
+const inr=n=>"₹"+Math.round(n).toLocaleString("en-IN");
+const emi=(p,r,y)=>{const i=r/1200,n=y*12;return i?p*i*Math.pow(1+i,n)/(Math.pow(1+i,n)-1):p/n};
+const hav=(a,b)=>{const R=6371,d=x=>x*Math.PI/180,dl=d(b.lat-a.lat),dg=d(b.lng-a.lng);const h=Math.sin(dl/2)**2+Math.cos(d(a.lat))*Math.cos(d(b.lat))*Math.sin(dg/2)**2;return 2*R*Math.asin(Math.sqrt(h))};
+/* ---------- rule engine + ranking ---------- */
+function evaluate(s,u){
+ const why=[];let ok=true;
+ if(u.cat!=="sc"){ok=false;why.push("Schemes here are for SC beneficiaries");}
+ if(s.goal!==u.goal){ok=false;why.push("Scheme is for "+s.goal+" purposes");}
+ if(s.incomeCap&&u.inc>s.incomeCap){ok=false;why.push("Income above "+inr(s.incomeCap)+" limit");}
+ if(u.cost<s.minCost){ok=false;why.push("Project cost below minimum "+inr(s.minCost));}
+ if(u.ten>s.maxYears){why.push("Period capped at "+s.maxYears+" years");}
+ const yrs=Math.min(u.ten,s.maxYears),loan=Math.min(u.cost*s.support,s.ceiling),e=emi(loan,s.rate,yrs),ratio=e*12/u.inc;
+ if(ok){why.push("Covers up to "+Math.round(s.support*100)+"% of cost, ceiling "+inr(s.ceiling));why.push("Fits income: EMI is "+Math.round(ratio*100)+"% of annual income share");}
+ const score=ok?100-s.rate*3+s.support*20-Math.min(ratio,1)*30:0;
+ return {s,ok,why,loan,e,yrs,ratio,own:u.cost-loan,score,total:e*yrs*12-loan};
+}
+function render(){
+ const u={goal:S.goal,cost:+$("cost").value,inc:+$("inc").value,ten:+$("ten").value,cat:$("cat").value};
+ $("costV").textContent=inr(u.cost);$("incV").textContent=inr(u.inc);$("tenV").textContent=u.ten;
+ const R=SCHEMES.map(s=>evaluate(s,u)).sort((a,b)=>b.score-a.score);
+ const b=R[0].ok?R[0]:null;S.best=b;
+ let h="";
+ if(b){h+=`<small>${t("best")}</small><div class="big">${b.s.name}</div>
+ <div class="kpis"><div class="kpi"><small>${t("loan")}</small><strong>${inr(b.loan)}</strong></div><div class="kpi"><small>${t("rate")}</small><strong>${b.s.rate}%</strong></div><div class="kpi"><small>${t("emi")}</small><strong>${inr(b.e)}</strong></div><div class="kpi"><small>${t("own")}</small><strong>${inr(b.own)}</strong></div><div class="kpi"><small>${t("tot")}</small><strong>${inr(b.total)}</strong></div></div>
+ <ul class="why">${b.why.map(w=>`<li>${w}</li>`).join("")}</ul>`;
+ if(b.ratio>.4)h+=`<p class="tag no">${t("heavy")}</p>`;}
+ else h+=`<div class="big">${t("none")}</div>`;
+ h+=`<h3 style="margin:16px 0 0;font-size:15px">${t("others")}</h3>`+R.filter(r=>r!==b).map(r=>`<div class="alt"><div><strong>${r.s.name}</strong><br><small style="color:var(--mute)">${r.why[0]||""}</small></div><span class="tag ${r.ok?"ok":"no"}">${r.ok?t("elig"):t("notel")}</span></div>`).join("");
+ $("res").innerHTML=h;
+ /* partner routing: scheme compatibility 50, proximity 30, freshness 20 */
+ if(b){const P=PARTNERS.filter(p=>p.s.includes(b.s.id)).map(p=>{const d=hav(S.pos,p),sc=50+30*Math.max(0,1-d/100)+20*Math.max(0,1-p.fresh/30);return{...p,d,sc}}).sort((a,b)=>b.sc-a.sc).slice(0,4);
+  $("parts").innerHTML=P.map(p=>`<div class="partner"><strong>${p.n}</strong><span class="score">${Math.round(p.sc)}% ${t("match")}</span><small style="color:var(--mute)">${p.t} · ${p.d.toFixed(1)} ${t("km")} · updated ${p.fresh}d ago</small></div>`).join("");
+  $("docs").innerHTML="<ul style='margin:0;padding-left:20px'>"+b.s.docs.map(d=>`<li><label style="display:inline;font-weight:400"><input type="checkbox"> ${d}</label></li>`).join("")+"</ul>";
+  let bal=b.loan,rows=`<tr><th>${t("m")}</th><th>EMI</th><th>${t("pr")}</th><th>${t("it")}</th><th>${t("bal")}</th></tr>`;
+  for(let m=1;m<=12&&bal>0;m++){const i=bal*b.s.rate/1200,p=b.e-i;bal-=p;rows+=`<tr><td>${m}</td><td>${inr(b.e)}</td><td>${inr(p)}</td><td>${inr(i)}</td><td>${inr(Math.max(bal,0))}</td></tr>`}
+  $("tbl").innerHTML=rows;
+ }else{$("parts").innerHTML="";$("docs").innerHTML="";$("tbl").innerHTML="";}
+ $("track").innerHTML="";
+}
+function lang(l){S.lang=l;document.documentElement.lang=l;$("lEn").setAttribute("aria-pressed",l==="en");$("lHi").setAttribute("aria-pressed",l==="hi");
+ document.querySelectorAll("[data-i]").forEach(e=>{const k=e.dataset.i;if(T[l][k])e.textContent=T[l][k]});render();}
+function goal(g){S.goal=g;$("gB").setAttribute("aria-pressed",g==="business");$("gE").setAttribute("aria-pressed",g==="education");render();}
+$("lEn").onclick=()=>lang("en");$("lHi").onclick=()=>lang("hi");
+$("gB").onclick=()=>goal("business");$("gE").onclick=()=>goal("education");
+["cost","inc","ten","cat"].forEach(i=>$(i).addEventListener("input",render));
+$("assist").onclick=e=>{const on=e.target.getAttribute("aria-pressed")!=="true";e.target.setAttribute("aria-pressed",on);document.body.classList.toggle("big",on)};
+$("loc").onclick=()=>{if(!navigator.geolocation){$("locS").textContent=t("locno");return}
+ navigator.geolocation.getCurrentPosition(p=>{S.pos={lat:p.coords.latitude,lng:p.coords.longitude};$("locS").textContent=t("locok");render()},()=>{$("locS").textContent=t("locno")},{timeout:8000})};
+$("say").onclick=()=>{if(!S.best||!window.speechSynthesis)return;const b=S.best,m=S.lang==="hi"?`सर्वश्रेष्ठ योजना ${b.s.name}। ऋण ${inr(b.loan)}। मासिक किस्त ${inr(b.e)}।`:`Best match ${b.s.name}. Loan ${inr(b.loan)}. Monthly EMI ${inr(b.e)}.`;
+ const u=new SpeechSynthesisUtterance(m);u.lang=S.lang==="hi"?"hi-IN":"en-IN";speechSynthesis.cancel();speechSynthesis.speak(u)};
+$("sub").onclick=()=>{if(!S.best)return;const id="SS"+Date.now().toString().slice(-8),st=["Submitted","Verification","Approval","Disbursement"];
+ $("track").innerHTML=`<p class="tag ok">${t("ref")}: ${id}</p><div class="steps">${st.map((s,i)=>`<div class="st ${i===0?"on":""}">${s}</div>`).join("")}</div>`};
+lang("en");
+</script>
+</body>
+</html>
