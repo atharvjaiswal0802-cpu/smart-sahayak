@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Sahayak – Admin console</title>
+<style>body{font:15px/1.5 system-ui,sans-serif;max-width:960px;margin:0 auto;padding:16px;color:#12243b}
+textarea{width:100%;height:210px;font:12px/1.4 ui-monospace,monospace}.row{border:1px solid #ccd;border-radius:8px;padding:10px;margin:10px 0}
+button,input{font:inherit;padding:6px 12px}.ok{color:#1e8e5a}.err{color:#b42318}</style></head><body>
+<h1>Admin console</h1>
+<p>Edit scheme rules and partner records. Every scheme save creates a new version with an audit trail. Set <b>verified</b> to true only after checking the official circular, and fill <b>verified_on</b>.</p>
+<p><input id="key" type="password" placeholder="Admin key" autocomplete="off"> <button id="load">Load</button> <span id="msg"></span></p>
+<h2>Funnel</h2><pre id="fun">–</pre>
+<h2>Schemes</h2><div id="sch"></div>
+<h2>Partners</h2><div id="par"></div>
+<script>
+const $=i=>document.getElementById(i),H=()=>({"X-Admin-Key":$("key").value,"Content-Type":"application/json"});
+const say=(m,ok)=>{$("msg").textContent=m;$("msg").className=ok?"ok":"err"};
+async function api(url,opt={}){const r=await fetch(url,{...opt,headers:H()});if(!r.ok)throw new Error(r.status+" "+(await r.text()));return r.json()}
+function card(box,obj,url,strip){const d=document.createElement("div");d.className="row";const h=document.createElement("b");h.textContent=obj.id+(obj.version?" (v"+obj.version+")":"");
+ const ta=document.createElement("textarea");const c={...obj};strip.forEach(k=>delete c[k]);ta.value=JSON.stringify(c,null,2);
+ const b=document.createElement("button");b.textContent="Save";b.onclick=async()=>{try{const r=await api(url+obj.id,{method:"PUT",body:ta.value});say("Saved "+obj.id+(r.version?" v"+r.version:""),1)}catch(e){say(e.message)}};
+ d.append(h,ta,b);box.append(d)}
+$("load").onclick=async()=>{try{
+ $("fun").textContent=JSON.stringify(await api("/api/admin/funnel"),null,1);
+ const s=await api("/api/schemes");$("sch").replaceChildren();s.forEach(x=>card($("sch"),x,"/api/admin/schemes/",["version","updated_at"]));
+ const p=await api("/api/admin/partners");$("par").replaceChildren();p.forEach(x=>card($("par"),x,"/api/admin/partners/",[]));say("Loaded",1)}catch(e){say(e.message)}};
+</script></body></html>
