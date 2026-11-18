@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Sahayak – Partner portal</title>
+<style>:root{--ink:#12243b;--line:#dbe1ea;--navy:#0f2a4a;--grn:#1e8e5a;--saf:#d9480f}
+body{font:16px/1.5 system-ui,"Noto Sans Devanagari",sans-serif;max-width:900px;margin:0 auto;padding:16px;color:var(--ink)}
+h1{margin:.2em 0}.card{border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0}
+input,select,button{font:inherit;padding:7px 10px}button{background:var(--saf);color:#fff;border:0;border-radius:8px;cursor:pointer;font-weight:700}
+label{display:block;margin:10px 0 4px;font-weight:600}fieldset{border:1px solid var(--line);border-radius:8px}fieldset label{display:inline-block;font-weight:400;margin-right:14px}
+table{width:100%;border-collapse:collapse}td,th{padding:6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:14px}
+#msg{font-weight:600}.ok{color:var(--grn)}.err{color:#b42318}:focus-visible{outline:3px solid var(--saf)}</style></head><body>
+<h1>Partner portal</h1><p>For authorised bank, RRB, SCA and MFI staff. Keep your scheme list and fund availability current so citizens are routed correctly.</p>
+<p id="msg" role="status"></p>
+<div class="card" id="login"><label for="ph">Registered mobile number</label><input id="ph" inputmode="tel" autocomplete="tel">
+<button id="send">Send OTP</button><label for="otp">OTP</label><input id="otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code"> <button id="ver">Sign in</button></div>
+<div id="dash" hidden>
+<div class="card"><h2 id="pname"></h2><p>Last confirmed: <b id="pver"></b></p>
+<fieldset id="sch"><legend>Schemes you are handling now</legend></fieldset>
+<label for="cap">Funds available for new loans: <output id="capv"></output></label><input id="cap" type="range" min="0" max="1" step="0.1">
+<label for="contact">Contact for applicants</label><input id="contact" maxlength="200" style="width:100%">
+<p><button id="save">Confirm availability</button> <button id="out" style="background:#5b6b80">Sign out</button></p></div>
+<div class="card"><h2>Referrals</h2><table><thead><tr><th>Scheme</th><th>Applicant (if shared)</th><th>Received</th><th>Status</th></tr></thead><tbody id="refs"></tbody></table></div></div>
+<script src="/auth.js"></script>
+<script>
+const $=i=>document.getElementById(i),say=(m,ok)=>{$("msg").textContent=m;$("msg").className=ok?"ok":"err"};
+const STATUS=["referred","contacted","documents_requested","applied","approved","rejected","disbursed"];
+$("send").onclick=async()=>{try{const r=await Auth.request($("ph").value);say(r.dev_otp?"Dev OTP: "+r.dev_otp:"OTP sent by SMS",1)}catch(e){say(e.message)}};
+$("ver").onclick=async()=>{try{const d=await Auth.verify($("ph").value,$("otp").value);if(d.role!=="partner"){Auth.logout();say("This number is not linked to a partner branch. Ask your State Channelising Agency admin.");return}say("Signed in",1);load()}catch(e){say(e.message)}};
+$("out").onclick=()=>{Auth.logout();location.reload()};
+$("cap").oninput=()=>{$("capv").textContent=Math.round($("cap").value*100)+"%"};
+async function load(){
+ try{const [p,s,r]=await Promise.all([Auth.call("/api/partner/me"),Auth.call("/api/schemes"),Auth.call("/api/partner/referrals")]);
+  $("login").hidden=true;$("dash").hidden=false;$("pname").textContent=p.name+" ("+p.type+")";$("pver").textContent=p.last_verified;
+  $("contact").value=p.contact||"";$("cap").value=p.capacity;$("cap").oninput();
+  const f=$("sch");f.replaceChildren(f.firstChild);
+  s.forEach(x=>{const l=document.createElement("label"),c=document.createElement("input");c.type="checkbox";c.value=x.id;c.checked=p.schemes.includes(x.id);l.append(c," "+x.name);f.append(l)});
+  const tb=$("refs");tb.replaceChildren();
+  r.forEach(x=>{const tr=tb.insertRow();tr.insertCell().textContent=x.scheme_id;
+   const a=x.applicant;tr.insertCell().textContent=a?`${a.phone} · ${a.details.goal}, cost ₹${a.details.cost}, income ₹${a.details.income}`:"Not shared";
+   tr.insertCell().textContent=x.created_at.slice(0,10);
+   const sel=document.createElement("select");STATUS.forEach(v=>{const o=new Option(v.replace("_"," "),v);o.selected=v===x.status;sel.add(o)});
+   sel.onchange=async()=>{try{await Auth.call("/api/partner/referrals/"+x.id,"PATCH",{status:sel.value});say("Status updated",1)}catch(e){say(e.message);load()}};
+   tr.insertCell().append(sel)});
+ }catch(e){say(e.message)}}
+$("save").onclick=async()=>{try{const schemes=[...document.querySelectorAll("#sch input:checked")].map(i=>i.value);
+ await Auth.call("/api/partner/me","PUT",{schemes,capacity:+$("cap").value,contact:$("contact").value});say("Availability confirmed",1);load()}catch(e){say(e.message)}};
+if(Auth.token)load();
+</script></body></html>

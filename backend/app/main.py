@@ -1,12 +1,14 @@
-import hmac, os
+import os
 from pathlib import Path
 from typing import Literal
 
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from . import db, engine
+from .accounts import router as accounts_router
+from .security import admin
 
 db.init()
 app = FastAPI(title="Smart Sahayak API", version="0.2.0")
@@ -59,13 +61,6 @@ class EventIn(BaseModel):
     scheme_id: str | None = Field(default=None, max_length=30)
 
 
-def admin(x_admin_key: str = Header(default="")):
-    key = os.getenv("ADMIN_KEY", "")
-    if not key or not hmac.compare_digest(x_admin_key.encode(), key.encode()):
-        raise HTTPException(401, "Invalid or missing admin key")
-    return "admin"
-
-
 @app.get("/api/health")
 def health():
     return {"ok": True}
@@ -104,7 +99,7 @@ def put_scheme(sid: str, s: SchemeIn, who: str = Depends(admin)):
 
 @app.get("/api/admin/schemes/{sid}/history")
 def scheme_history(sid: str, _: str = Depends(admin)):
-    return db.history(sid)
+    return db.history_of(sid)
 
 
 @app.get("/api/admin/partners")
@@ -124,6 +119,8 @@ def put_partner(pid: str, p: PartnerIn, _: str = Depends(admin)):
 def funnel(_: str = Depends(admin)):
     return db.funnel()
 
+
+app.include_router(accounts_router, prefix="/api")
 
 FRONT = Path(__file__).resolve().parents[2] / "frontend"
 app.mount("/", StaticFiles(directory=FRONT, html=True), name="web")
